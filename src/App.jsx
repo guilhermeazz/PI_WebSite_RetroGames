@@ -1,7 +1,12 @@
 import React from 'react';
+import Nav from './components/navbar';
 
 function App() {
-    <h1>Teste</h1>
+    return (
+        <>
+            <Nav />
+        </>
+    );
 }
 
 export default App;
