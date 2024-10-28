@@ -1,10 +1,10 @@
 import React from 'react';
-import Nav from './components/navbar';
+import Login from './containers/login'
 
 function App() {
     return (
         <>
-            <Nav />
+        <Login/> 
         </>
     );
 }

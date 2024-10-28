@@ -12,12 +12,12 @@ module.exports = {
           '3': '#F6723A',
           '4': '#FFFFFF',
           '5': '#172029'
-        
         }
-      }
+      },
+      zIndex: {
+        '-1': '-1', // Adicione a vírgula aqui
+      },
     },
   },
   plugins: [],
 }
-
-
