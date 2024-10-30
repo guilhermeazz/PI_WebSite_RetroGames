@@ -5,7 +5,7 @@ import { MagnifyingGlassCircleIcon, ShoppingCartIcon, UserIcon, ChatBubbleLeftIc
 
 const Nav = () => {
     return (
-        <nav className="bg-primary-1 px-4 py-1.5 flex justify-between items-center py-2 gap-6">
+        <nav className="bg-primary-1 px-4 flex justify-between items-center py-2 gap-6 h-">
             <div className='bg-primary-2 pl-6 pr-40 rounded-xl'>
                 <div className='bg-primary-3 pl-6 pr-20 rounded-lg'>
                     <div className="bg-primary-4 p-2 rounded-lg">

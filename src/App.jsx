@@ -1,12 +1,15 @@
 import React from 'react';
-import Nav from './components/navbar';
+import { Routes, Route } from 'react-router-dom';
+import Login from './containers/login';
+import RecuperarSenha from './containers/login'; 
 
 function App() {
-    return (
-        <>
-            <Nav />
-        </>
-    );
+  return (
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+    </Routes>
+  );
 }
 
 export default App;
