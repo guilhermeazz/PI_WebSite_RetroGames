@@ -1,12 +1,15 @@
 import React from 'react';
-import Login from './containers/login'
+import { Routes, Route } from 'react-router-dom';
+import Login from './containers/login';
+import RecuperarSenha from './containers/login'; 
 
 function App() {
-    return (
-        <>
-        <Login/> 
-        </>
-    );
+  return (
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+    </Routes>
+  );
 }
 
 export default App;
