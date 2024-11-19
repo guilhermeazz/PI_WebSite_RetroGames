@@ -38,19 +38,10 @@ const Login = () => {
       </div>
 
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex h-4/6 w-1/2 rounded-2xl overflow-hidden">
-          <div className="bg-primary-2 w-5/12 h-full text-white flex flex-col justify-center items-center gap-5">
-            <h1 className="font-extrabold">Seja Bem vindo!</h1>
-            <div className="font-semibold flex flex-col items-center gap-2">
-              <p>Acesse agora mesmo</p>
-              <p>a sua conta!</p>
-              <p> e desfrute de todos as</p>
-              <p>possibilidades com a</p>
-              <p className="font-bold">RetroZone</p>
-            </div>
-          </div>
+        <div className="flex h-4/6 w-2/5">
 
-          <div className="bg-primary-4 w-7/12 h-full">
+
+          <div className="bg-primary-4 w-full h-full rounded-2xl">
             <div className="flex justify-center p-6">
               <img
                 src={logo}
@@ -65,6 +56,17 @@ const Login = () => {
                   <div className="flex flex-col gap-2">
                     <div>
                       <Input
+                        texto="Nome completo:"
+                        placeholder="Insira seu nome completo"
+                        type="name"
+                        id="nome"
+                        value={inputValue.email}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+
+                    <div>
+                      <Input
                         texto="Email:"
                         placeholder="exemplo@email.com"
                         type="email"
@@ -73,7 +75,7 @@ const Login = () => {
                         onChange={handleInputChange}
                       />
                     </div>
-                    
+
                     <div>
                       <Input
                         texto="Senha:"
@@ -84,34 +86,28 @@ const Login = () => {
                         onChange={handleInputChange}
                       />
                     </div>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type='checkbox'
-                      />
-                      <span>Lembre-me</span>
-                    </div>
 
                     <div>
-                      <Link
-                        to="/recuperar-senha"
-                        className="text-black hover:underline hover:text-blue-500 font-light">
-                        Esqueci minha senha
-                      </Link>
+                      <Input
+                        texto="Confirmar senha:"
+                        placeholder="*******"
+                        type="password"
+                        id="confirmar-senha"
+                        value={inputValue.senha}
+                        onChange={handleInputChange}
+                      />
                     </div>
                   </div>
-                </div>
 
-                <Botaolc texto="Entrar" cor="green" onClick={handleButtonClick} />
+                </div>
+                <Botaolc texto="Cadastrar" cor="green" onClick={handleButtonClick} />
               </form>
               <div className='flex flex-col text-center'>
-                <p className='font-light'>Ainda não possui cadastro?</p>
+                <p className='font-light'>Já possuo cadastro!</p>
                 <BotaoLink
-                  link='/cadastro'
+                  link='/'
                   cor='yellow'
-                  texto='cadastrar' />
+                  texto='Login' />
               </div>
             </div>
           </div>
