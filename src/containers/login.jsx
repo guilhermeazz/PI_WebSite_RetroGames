@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '../assets/global/img-logo.png';
 
 import Input from '../components/Inputslc';
-import Botaolc from '../components/Botaolc';
-import BotaoLink from '../components/BotaoLink';
+import Botaolc from '../components/botaolc';
+import BotaoLink from '../components/botaoLink';
 
 const Login = () => {
   const [inputValue, setInputValue] = useState({
