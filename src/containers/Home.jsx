@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import logo from '../assets/global/img-logo.png';
 import MinhaConta from '../assets/header/icon-minha-conta.png';
@@ -12,16 +12,30 @@ import BarraEsqueda from '../assets/fliperama/img-barra-esquerda.png';
 import JoystickFliperama from '../assets/fliperama/img-joystick-fliperama.png';
 import BotaoFliperama from '../assets/fliperama/img-botao-fliperama.png';
 
-import Promocao from '../assets/promocao/img-promocao.jpg'
-
-import Input from '../components/Inputslc';
-import Botaolc from '../components/botaolc';
-import BotaoLink from '../components/botaoLink';
+import Promocao from '../assets/promocao/img-promocao.jpg';
 
 const Home = () => {
+    const [searchQuery, setSearchQuery] = useState(''); // Estado para armazenar o valor do input de pesquisa
+    const navigate = useNavigate(); // Hook para redirecionar
+
+    // Função para capturar o valor do input
+    const handleInputChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    // Função para executar a pesquisa
+    const handleSearch = () => {
+        if (searchQuery.trim() === '') {
+            alert('Por favor, digite algo para pesquisar.');
+            return;
+        }
+
+        navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    };
+
     return (
         <>
-            <div className='bg-gray-900 h-screen'>
+            <div className='bg-gray-900'>
                 <div className='w-full'>
                     {/* Header */}
                     <div className='bg-red-900'>
@@ -39,11 +53,14 @@ const Home = () => {
                                     <div>
                                         <input
                                             type="text"
-                                            className='w-80 pl-4 py-1 rounded-3xl' />
+                                            value={searchQuery} // Valor controlado pelo estado
+                                            onChange={handleInputChange} // Atualiza o estado ao digitar
+                                            className='w-80 pl-4 py-1 rounded-3xl'
+                                        />
                                     </div>
 
                                     <div>
-                                        <button type='submit'>
+                                        <button type='button' onClick={handleSearch}> {/* Chama a função de pesquisa */}
                                             <img src={Lupa} className='h-10' />
                                         </button>
                                     </div>
@@ -57,7 +74,7 @@ const Home = () => {
                                     </div>
 
                                     <div className='bg-orange-600 p-2 rounded-2xl'>
-                                        <Link to="#">
+                                        <Link to="/minha-conta">
                                             <img src={MinhaConta} className='h-10' />
                                         </Link>
                                     </div>
@@ -145,29 +162,6 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div>
-                        <div className='bg-red-900 h-4'></div>
-
-                        <footer>
-                            <div className='flex bg-gray-900 text-white py-12 justify-around'>
-                                <div className='flex flex-col gap-2'>
-                                    <div>
-                                        <h1>Contato</h1>
-                                    </div>
-
-                                    <div>
-                                        <ul>
-                                            <li>Email: Alanfelix@gmail.com</li>
-                                            <li>Endereço: Av de Marcondes N:1200 </li>
-                                            <li>Telefone: (81) 99662-3496 </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </footer>
                     </div>
                 </div>
             </div>
