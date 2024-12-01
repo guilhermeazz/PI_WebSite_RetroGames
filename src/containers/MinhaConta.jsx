@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom'; // Importa useNavigate para redirecionamento
 
-import logo from '../assets/global/img-logo.png';
+import logo from '../assets/global/logo.png';
 import SetaEsquerda from '../assets/global/img-seta-esquerda.png';
 
 const MinhaConta = () => {

@@ -7,7 +7,7 @@ const DadosUsuarios = () => {
     // Função para buscar os dados do usuário
     const fetchUsuario = async () => {
       try {
-        const response = await fetch('http://localhost/retrozone/api/get_usuario.php'); // URL do backend para buscar os dados
+        const response = await fetch('http://localhost/retrozone/api/usuario/read.php'); // URL do backend para buscar os dados
         if (!response.ok) {
           throw new Error('Erro ao buscar os dados do usuário');
         }

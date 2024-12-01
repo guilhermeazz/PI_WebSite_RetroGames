@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/global/img-logo.png';
+import logo from '../assets/global/logo.png';
 import Input from '../components/Inputslc';
 import Botaolc from '../components/botaolc';
 import BotaoLink from '../components/BotaoLink';

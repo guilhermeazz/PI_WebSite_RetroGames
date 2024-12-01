@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importando useNavigate
-import logo from '../assets/global/img-logo.png';
+import logo from '../assets/global/logo.png';
 
 import Input from '../components/Inputslc';
 import Botaolc from '../components/botaolc';
@@ -26,11 +26,27 @@ const Cadastrar = () => {
     }));
   };
 
-  const validatePhone = (phone) => {
-    // Expressão regular para validar o formato do telefone brasileiro
-    const phoneRegex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
-    return phoneRegex.test(phone);
-  };
+  useEffect(() => {
+    const telefoneElement = document.getElementById("telefone");
+    
+    const handleTelefoneInput = (e) => {
+      let telefone = e.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+      if (telefone.length > 11) { // Limita a 11 dígitos
+          telefone = telefone.substring(0, 11);
+      }
+      e.target.value = telefone;
+      setInputValue(prevState => ({
+        ...prevState,
+        telefone: telefone
+      }));
+    };
+
+    telefoneElement.addEventListener("input", handleTelefoneInput);
+
+    return () => {
+      telefoneElement.removeEventListener("input", handleTelefoneInput);
+    };
+  }, []);
 
   const validateEmail = (email) => {
     // Expressão regular para validar o formato de email
@@ -44,20 +60,14 @@ const Cadastrar = () => {
     return passwordRegex.test(senha);
   };
 
+  const validatePhone = (telefone) => {
+    // Verificar se o telefone tem exatamente 11 dígitos
+    return /^\d{11}$/.test(telefone);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault(); // Evita o reload da página  
-
-    // Validação dos campos
-    if (!inputValue.nome_completo || !inputValue.email || !inputValue.telefone || !inputValue.senha || !inputValue.confirmar_senha) {
-      setError('Por favor, preencha todos os campos.');
-      return;
-    }
-
-    if (!validateEmail(inputValue.email)) {
-      setError('Por favor, insira um email válido.');
-      return;
-    }
-
+  
     if (inputValue.senha !== inputValue.confirmar_senha) {
       setError('As senhas não conferem');
       return;
@@ -70,7 +80,7 @@ const Cadastrar = () => {
 
     // Validação do telefone
     if (!validatePhone(inputValue.telefone)) {
-      setError('Por favor, insira um número de telefone válido (formato: (XX) XXXXX-XXXX)');
+      setError('Por favor, insira um número de telefone válido com exatamente 11 dígitos.');
       return;
     }
 
@@ -84,24 +94,25 @@ const Cadastrar = () => {
           nome_completo: inputValue.nome_completo,
           email: inputValue.email,
           senha: inputValue.senha,
-          telefone: inputValue.telefone // Inclui telefone na requisição
+          telefone: inputValue.telefone || null,
         })
       });
 
       if (!response.ok) {
         const errorDetails = await response.json();
         console.error("Erro:", errorDetails);
-        setError(`Erro ao cadastrar usuário: ${errorDetails.message || 'Erro desconhecido'}`);
+        alert(`Erro ao cadastrar usuário: ${errorDetails.message}`);
         return;
       }
 
-      // Redirecionando para a tela de login
-      localStorage.setItem('registrationSuccess', 'true');
-      navigate('/'); // O '/' pode ser alterado para a rota de login no seu projeto
-
+      localStorage.setItem('registro', JSON.stringify(inputValue)); // Salvando o registro no localStorage
+  
+      const data = await response.json();
+      alert(data.message);
+      navigate('/'); // Redirecionar para a página de login após o cadastro bem-sucedido
     } catch (error) {
       console.error("Erro:", error);
-      setError("Erro ao cadastrar usuário");
+      alert("Erro ao cadastrar usuário");
     }
   };
 
@@ -116,71 +127,55 @@ const Cadastrar = () => {
         <div className="bg-white w-2/5 h-auto p-6 rounded-2xl flex flex-col items-center">
           <img
             src={logo}
-            alt="logo da RetroZone, composto por letras coloridas e cartunizadas formando as palavras Retro e Zone"
+            alt="logo da RetroZone"
             className="h-12 mb-6"
           />
 
           {/* Exibindo mensagem de erro, se houver */}
           {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
-          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6" id="formularioCadastro">
             <div className="flex flex-col gap-1">
-              <div className="flex flex-col gap-2">
-                <div>
-                  <Input
-                    texto="Nome completo:"
-                    placeholder="Insira seu nome completo"
-                    type="text"
-                    id="nome_completo"
-                    value={inputValue.nome_completo}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div>
-                  <Input
-                    texto="Email:"
-                    placeholder="exemplo@email.com"
-                    type="email"
-                    id="email"
-                    value={inputValue.email}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div>
-                  <Input
-                    texto="Telefone:"
-                    placeholder="(xx) xxxxx-xxxx"
-                    type="tel"
-                    id="telefone"
-                    value={inputValue.telefone}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div>
-                  <Input
-                    texto="Senha:"
-                    placeholder="*******"
-                    type="password"
-                    id="senha"
-                    value={inputValue.senha}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div>
-                  <Input
-                    texto="Confirmar senha:"
-                    placeholder="*******"
-                    type="password"
-                    id="confirmar_senha"
-                    value={inputValue.confirmar_senha}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
+              <Input
+                texto="Nome completo:"
+                placeholder="Insira seu nome completo"
+                type="text"
+                id="nome_completo"
+                value={inputValue.nome_completo}
+                onChange={handleInputChange}
+              />
+              <Input
+                texto="Email:"
+                placeholder="exemplo@email.com"
+                type="email"
+                id="email"
+                value={inputValue.email}
+                onChange={handleInputChange}
+              />
+              <Input
+                texto="Telefone:"
+                placeholder="(xx) xxxxx-xxxx"
+                type="tel"
+                id="telefone"
+                value={inputValue.telefone}
+                onChange={handleInputChange}
+              />
+              <Input
+                texto="Senha:"
+                placeholder="*******"
+                type="password"
+                id="senha"
+                value={inputValue.senha}
+                onChange={handleInputChange}
+              />
+              <Input
+                texto="Confirmar senha:"
+                placeholder="*******"
+                type="password"
+                id="confirmar_senha"
+                value={inputValue.confirmar_senha}
+                onChange={handleInputChange}
+              />
             </div>
             <Botaolc texto="Cadastrar" cor="green" />
           </form>
@@ -190,7 +185,8 @@ const Cadastrar = () => {
             <BotaoLink
               link='/'
               cor='yellow'
-              texto='Login' />
+              texto='Login'
+            />
           </div>
         </div>
       </div>
