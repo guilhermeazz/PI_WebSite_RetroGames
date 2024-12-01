@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Importando useNavigate
 import logo from '../assets/global/img-logo.png';
 
 import Input from '../components/Inputslc';
@@ -12,8 +12,11 @@ const Cadastrar = () => {
     email: '',
     senha: '',
     confirmar_senha: '',
-    telefone: '' 
+    telefone: ''
   });
+
+  const [error, setError] = useState(''); // Estado para exibir mensagens de erro
+  const navigate = useNavigate(); // Inicializando a função de navegação
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -23,14 +26,54 @@ const Cadastrar = () => {
     }));
   };
 
+  const validatePhone = (phone) => {
+    // Expressão regular para validar o formato do telefone brasileiro
+    const phoneRegex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateEmail = (email) => {
+    // Expressão regular para validar o formato de email
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (senha) => {
+    // Verificar se a senha tem pelo menos 8 caracteres
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passwordRegex.test(senha);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault(); // Evita o reload da página  
-  
-    if (inputValue.senha !== inputValue.confirmar_senha) {
-      alert("As senhas não conferem");
+
+    // Validação dos campos
+    if (!inputValue.nome_completo || !inputValue.email || !inputValue.telefone || !inputValue.senha || !inputValue.confirmar_senha) {
+      setError('Por favor, preencha todos os campos.');
       return;
     }
-  
+
+    if (!validateEmail(inputValue.email)) {
+      setError('Por favor, insira um email válido.');
+      return;
+    }
+
+    if (inputValue.senha !== inputValue.confirmar_senha) {
+      setError('As senhas não conferem');
+      return;
+    }
+
+    if (!validatePassword(inputValue.senha)) {
+      setError('A senha deve ter pelo menos 8 caracteres, com letras maiúsculas, minúsculas e números.');
+      return;
+    }
+
+    // Validação do telefone
+    if (!validatePhone(inputValue.telefone)) {
+      setError('Por favor, insira um número de telefone válido (formato: (XX) XXXXX-XXXX)');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost/retrozone/api/usuario/create.php', {
         method: 'POST',
@@ -44,22 +87,23 @@ const Cadastrar = () => {
           telefone: inputValue.telefone // Inclui telefone na requisição
         })
       });
-  
+
       if (!response.ok) {
         const errorDetails = await response.json();
         console.error("Erro:", errorDetails);
-        alert(`Erro ao cadastrar usuário: ${errorDetails.message}`);
+        setError(`Erro ao cadastrar usuário: ${errorDetails.message || 'Erro desconhecido'}`);
         return;
       }
-  
-      const data = await response.json();
-      alert(data.message);
+
+      // Redirecionando para a tela de login
+      localStorage.setItem('registrationSuccess', 'true');
+      navigate('/'); // O '/' pode ser alterado para a rota de login no seu projeto
+
     } catch (error) {
       console.error("Erro:", error);
-      alert("Erro ao cadastrar usuário");
+      setError("Erro ao cadastrar usuário");
     }
   };
-  
 
   return (
     <>
@@ -69,12 +113,15 @@ const Cadastrar = () => {
       </div>
 
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="bg-white w-2/5 h-auto p-6 rounded-2xl flex flex-col items-center"> 
+        <div className="bg-white w-2/5 h-auto p-6 rounded-2xl flex flex-col items-center">
           <img
             src={logo}
             alt="logo da RetroZone, composto por letras coloridas e cartunizadas formando as palavras Retro e Zone"
             className="h-12 mb-6"
           />
+
+          {/* Exibindo mensagem de erro, se houver */}
+          {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
           <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
             <div className="flex flex-col gap-1">
@@ -137,6 +184,7 @@ const Cadastrar = () => {
             </div>
             <Botaolc texto="Cadastrar" cor="green" />
           </form>
+
           <div className='flex flex-col w-full text-center mt-6'>
             <p className='font-light'>Já possuo cadastro!</p>
             <BotaoLink

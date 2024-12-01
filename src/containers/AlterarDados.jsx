@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Inputslc from '../components/Inputslc';
 
-const AlterarSenha = () => {
+const AlterarDados = () => {
     const [inputValue, setInputValue] = useState({
         senhaAtual: '',
         novaSenha: '',
@@ -106,4 +106,4 @@ const AlterarSenha = () => {
     );
 };
 
-export default AlterarSenha;
+export default AlterarDados;

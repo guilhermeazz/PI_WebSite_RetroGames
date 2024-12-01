@@ -1,6 +1,8 @@
 const Carrinho = () => {
     return(
-        <></>
+        <>
+        
+        </>
     );
 }
 

@@ -1,118 +1,111 @@
-import React, { useEffect, useState } from 'react';  
-import Inputslc from '../components/Inputslc'; // Importando o componente de entrada  
+import React, { useEffect, useState } from 'react';
 
-const DadosUsuarios = () => {  
-  const [usuario, setUsuario] = useState({  
-    nomeCompleto: '',  
-    cpf: '',  
-    cep: '',  
-    email: '',  
-    nomeDaRua: '',  
-    numeroDaCasa: '',  
-    senha: '',  
-  });  
+const DadosUsuarios = () => {
+  const [usuario, setUsuario] = useState(null); // Para armazenar os dados do usuário
 
-  useEffect(() => {  
-    // Função para buscar os dados do usuário  
-    const fetchUsuario = async () => {  
-      try {  
-        const response = await fetch('URL_DO_SEU_BACKEND'); // Substitua pela URL do seu backend  
-        if (!response.ok) {  
-          throw new Error('Erro ao buscar os dados do usuário');  
-        }  
-        const data = await response.json();  
-        setUsuario(data);  
-      } catch (error) {  
-        console.error('Erro:', error);  
-      }  
-    };  
+  useEffect(() => {
+    // Função para buscar os dados do usuário
+    const fetchUsuario = async () => {
+      try {
+        const response = await fetch('http://localhost/retrozone/api/get_usuario.php'); // URL do backend para buscar os dados
+        if (!response.ok) {
+          throw new Error('Erro ao buscar os dados do usuário');
+        }
+        const data = await response.json();
+        setUsuario(data); // Armazena os dados no estado
+      } catch (error) {
+        console.error('Erro:', error);
+      }
+    };
 
-    fetchUsuario(); // Chama a função ao montar o componente  
-  }, []);  
+    fetchUsuario(); // Chama a função ao montar o componente
+  }, []);
 
-  const handleChange = (e) => {  
-    const { name, value } = e.target;  
-    setUsuario({  
-      ...usuario,  
-      [name]: value,  
-    });  
-  };  
+  // Função para excluir o usuário
+  const handleDelete = async () => {
+    try {
+      const response = await fetch('http://localhost/retrozone/api/delete_usuario.php', { // URL do backend para deletar o usuário
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_usuario: usuario.id_usuario }), // Envia o ID do usuário a ser excluído
+      });
 
-  const handleSubmit = async (e) => {  
-    e.preventDefault();  
-    try {  
-      const response = await fetch('URL_DO_SEU_BACKEND', { // Substitua pela URL do seu backend  
-        method: 'POST', // ou 'PUT', dependendo da sua implementação  
-        headers: {  
-          'Content-Type': 'application/json',  
-        },  
-        body: JSON.stringify(usuario),  
-      });  
-      if (!response.ok) {  
-        throw new Error('Erro ao salvar os dados');  
-      }  
-      const result = await response.json();  
-      console.log('Dados salvos:', result);  
-      // Você pode adicionar um feedback para o usuário aqui  
-    } catch (err) {  
-      console.error(err);  
-    }  
-  };  
+      if (!response.ok) {
+        throw new Error('Erro ao excluir o usuário');
+      }
 
-  // Mapeamento de labels  
-  const labels = {  
-    nomeCompleto: 'Nome',  
-    cpf: 'CPF',  
-    cep: 'CEP',  
-    email: 'E-mail',  
-    nomeDaRua: 'Nome da Rua',  
-    numeroDaCasa: 'Número da Casa',  
-    senha: 'Senha',  
-  };  
+      alert('Usuário excluído com sucesso!');
+      window.location.href = '/login'; // Redireciona para a página de login após exclusão
+    } catch (error) {
+      console.error('Erro:', error);
+    }
+  };
 
-  // Lista de campos obrigatórios (exemplo: apenas email é obrigatório)  
-  const camposObrigatorios = ['email', 'cpf']; // adicione os campos que você quer que sejam obrigatórios  
+  if (!usuario) {
+    return <p>Carregando...</p>; // Exibe uma mensagem de carregamento enquanto os dados são recuperados
+  }
 
-  return (  
-    <div className='flex'>  
-      <div className='w-full'>  
-        <div className='flex flex-col gap-4'>  
-          <div className='text-center'>  
-            <h1 className='font-bold text-xl'>Meus dados</h1>  
-          </div>  
+  return (
+    <div className="flex justify-center mt-8">
+      <div className="w-full max-w-2xl p-4">
+        <div className="text-center mb-4">
+          <h1 className="font-bold text-xl">Meus Dados</h1>
+        </div>
 
-          <div>  
-            <form onSubmit={handleSubmit} className='flex flex-col gap-4'>  
-              <div className='flex flex-col gap-2'>  
-                {/* Renderiza os campos do formulário conforme o estado do usuário */}  
-                {Object.entries(usuario).map(([key, value]) => (  
-                  <Inputslc  
-                    key={key}  
-                    texto={labels[key] || key.replace(/([A-Z])/g, ' \$1').trim()} // Usando o mapeamento de labels  
-                    placeholder={`Digite seu ${labels[key] || key.replace(/([A-Z])/g, ' \$1').trim()}`}  
-                    type={key === 'senha' ? 'password' : 'text'}  
-                    id={key}  
-                    name={key} // Certifique-se de adicionar o nome para o controle do handleChange  
-                    value={value} // Certifique-se de controlar o valor do input  
-                    onChange={handleChange}  
-                    required={camposObrigatorios.includes(key)} // Define como obrigatório baseado na lista  
-                  />  
-                ))}  
-              </div>  
-              <div className='mt-4 text-center'>  
-                <button  
-                  type="submit"  
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"  
-                >  
-                  Salvar alterações  
-                </button>  
-              </div>  
-            </form>  
-          </div>  
-        </div>  
-      </div>  
-    </div>  
-  );  
-};  
+        {/* Exibe as informações do usuário */}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between">
+              <span className="font-semibold">Nome</span>
+              <span>{usuario.nome_completo}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">CPF</span>
+              <span>{usuario.cpf}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">E-mail</span>
+              <span>{usuario.email}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">Telefone</span>
+              <span>{usuario.telefone || 'Não informado'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">CEP</span>
+              <span>{usuario.cep || 'Não informado'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">Rua</span>
+              <span>{usuario.rua || 'Não informado'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">Número</span>
+              <span>{usuario.numero || 'Não informado'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">Cidade</span>
+              <span>{usuario.cidade || 'Não informado'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">Estado</span>
+              <span>{usuario.estado || 'Não informado'}</span>
+            </div>
+          </div>
+
+          {/* Botão para excluir o usuário */}
+          <div className="text-center mt-4">
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Excluir Conta
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default DadosUsuarios;

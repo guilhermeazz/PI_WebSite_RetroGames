@@ -1,10 +1,21 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom'; // Não esqueça de importar o Outlet  
+import { Link, Outlet, useNavigate } from 'react-router-dom'; // Importa useNavigate para redirecionamento
 
 import logo from '../assets/global/img-logo.png';
 import SetaEsquerda from '../assets/global/img-seta-esquerda.png';
 
 const MinhaConta = () => {
+    const navigate = useNavigate(); // Hook para redirecionar
+
+    const handleLogout = () => {
+        // Remove o token do armazenamento
+        localStorage.removeItem('authToken');
+        sessionStorage.removeItem('authToken');
+
+        // Redireciona para a página de login
+        navigate('/');
+    };
+
     return (
         <>
             <div className='flex h-screen'>
@@ -39,7 +50,17 @@ const MinhaConta = () => {
                                     </tr>
                                     <tr>
                                         <td className="py-2 px-4">
-                                            <Link to="alterar-senha" className="hover:text-blue-500 font-bold">Alterar Senha</Link>
+                                            <Link to="alterar-dados" className="hover:text-blue-500 font-bold">Alterar Dados</Link>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2 px-4">
+                                            <Link to="cadastro-produto" className="hover:text-blue-500 font-bold">Cadastro Produto</Link>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2 px-4">
+                                            <Link to="Carrinho" className="hover:text-blue-500 font-bold">Carrinho</Link>
                                         </td>
                                     </tr>
                                     <tr>
@@ -47,7 +68,17 @@ const MinhaConta = () => {
                                             <Link to="favoritos" className="hover:text-blue-500 font-bold">Favoritos</Link>
                                         </td>
                                     </tr>
-                                    {/* Você pode adicionar mais links aqui */}
+                                    <tr>
+                                        <td className="py-2 px-4">
+                                            {/* Botão de logout com a função handleLogout */}
+                                            <button
+                                                onClick={handleLogout}
+                                                className="hover:text-red-500 font-bold">
+                                                Logout
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {/* Adicione mais links aqui, se necessário */}
                                 </tbody>
                             </table>
                         </div>
