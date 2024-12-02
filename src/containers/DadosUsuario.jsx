@@ -1,111 +1,234 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const DadosUsuarios = () => {
-  const [usuario, setUsuario] = useState(null); // Para armazenar os dados do usuário
+const DadosUsuario = () => {
+  const [usuario, setUsuario] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); // Estado para controlar a edição
+  const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Função para buscar os dados do usuário
-    const fetchUsuario = async () => {
+    const userId = localStorage.getItem('userId');
+
+    if (!userId) {
+      navigate('/'); // Se não houver usuário logado, redireciona para a página inicial
+      return;
+    }
+
+    const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost/retrozone/api/usuario/read.php'); // URL do backend para buscar os dados
+        const response = await fetch(`http://localhost/retrozone/api/usuario/read_single.php?id=${userId}`);
+        
         if (!response.ok) {
-          throw new Error('Erro ao buscar os dados do usuário');
+          throw new Error('Erro ao carregar os dados do usuário');
         }
+
         const data = await response.json();
-        setUsuario(data); // Armazena os dados no estado
+
+        if (data.message) {
+          setError(data.message);
+        } else {
+          setUsuario(data);
+          setFormData(data); // Inicializa os dados do formulário
+        }
       } catch (error) {
-        console.error('Erro:', error);
+        setError('Erro ao buscar dados do usuário.');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUsuario(); // Chama a função ao montar o componente
-  }, []);
+    fetchUserData();
+  }, [navigate]);
 
-  // Função para excluir o usuário
   const handleDelete = async () => {
-    try {
-      const response = await fetch('http://localhost/retrozone/api/delete_usuario.php', { // URL do backend para deletar o usuário
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_usuario: usuario.id_usuario }), // Envia o ID do usuário a ser excluído
-      });
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
 
-      if (!response.ok) {
-        throw new Error('Erro ao excluir o usuário');
-      }
+    const response = await fetch('http://localhost/retrozone/api/usuario/delete.php', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id_usuario: userId })
+    });
 
-      alert('Usuário excluído com sucesso!');
-      window.location.href = '/login'; // Redireciona para a página de login após exclusão
-    } catch (error) {
-      console.error('Erro:', error);
+    const data = await response.json();
+
+    if (response.ok) {
+      handleLogout();
+    } else {
+      setError(data.message || 'Erro ao excluir usuário.');
     }
   };
 
-  if (!usuario) {
-    return <p>Carregando...</p>; // Exibe uma mensagem de carregamento enquanto os dados são recuperados
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    sessionStorage.removeItem('authToken');
+    localStorage.removeItem('userId');
+    sessionStorage.removeItem('userId');
+    navigate('/');
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSaveChanges = async () => {
+    const response = await fetch('http://localhost/retrozone/api/usuario/update.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setUsuario(formData); // Atualiza os dados do usuário
+      setIsEditing(false); // Sai do modo de edição
+    } else {
+      setError(data.message || 'Erro ao atualizar usuário.');
+    }
+  };
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
   return (
-    <div className="flex justify-center mt-8">
-      <div className="w-full max-w-2xl p-4">
-        <div className="text-center mb-4">
-          <h1 className="font-bold text-xl">Meus Dados</h1>
+    <div className="dados-usuario-container">
+      <h1>Dados do Usuário</h1>
+      {usuario && (
+        <div className="usuario-info">
+          {isEditing ? (
+            <div>
+              <h2>Editar Dados</h2>
+              <form onSubmit={(e) => e.preventDefault()} className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <label>Nome Completo</label>
+                  <input
+                    type="text"
+                    name="nome_completo"
+                    value={formData.nome_completo || ''}
+                    onChange={handleEditChange}
+                    className="p-2 border rounded"
+                  />
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email || ''}
+                    onChange={handleEditChange}
+                    className="p-2 border rounded"
+                  />
+                  <label>Telefone</label>
+                  <input
+                    type="text"
+                    name="telefone"
+                    value={formData.telefone || ''}
+                    onChange={handleEditChange}
+                    className="p-2 border rounded"
+                  />
+                  <label>CEP</label>
+                  <input
+                    type="text"
+                    name="cep"
+                    value={formData.cep || ''}
+                    onChange={handleEditChange}
+                    className="p-2 border rounded"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label>Rua</label>
+                  <input
+                    type="text"
+                    name="rua"
+                    value={formData.rua || ''}
+                    onChange={handleEditChange}
+                    className="p-2 border rounded"
+                  />
+                  <label>Número</label>
+                  <input
+                    type="text"
+                    name="numero"
+                    value={formData.numero || ''}
+                    onChange={handleEditChange}
+                    className="p-2 border rounded"
+                  />
+                  <label>Cidade</label>
+                  <input
+                    type="text"
+                    name="cidade"
+                    value={formData.cidade || ''}
+                    onChange={handleEditChange}
+                    className="p-2 border rounded"
+                  />
+                  <label>Estado</label>
+                  <input
+                    type="text"
+                    name="estado"
+                    value={formData.estado || ''}
+                    onChange={handleEditChange}
+                    className="p-2 border rounded"
+                  />
+                </div>
+              </form>
+              <div className="flex justify-center mt-6">
+                <button
+                  type="button"
+                  onClick={handleSaveChanges}
+                  className="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600"
+                >
+                  Salvar Alterações
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <p><strong>ID:</strong> {usuario.id_usuario}</p>
+              <p><strong>Nome Completo:</strong> {usuario.nome_completo}</p>
+              <p><strong>Email:</strong> {usuario.email}</p>
+              <p><strong>Telefone:</strong> {usuario.telefone}</p>
+              <p><strong>CEP:</strong> {usuario.cep}</p>
+              <p><strong>Rua:</strong> {usuario.rua}</p>
+              <p><strong>Número:</strong> {usuario.numero}</p>
+              <p><strong>Cidade:</strong> {usuario.cidade}</p>
+              <p><strong>Estado:</strong> {usuario.estado}</p>
+              <p><strong>Data de Criação:</strong> {usuario.data_criacao}</p>
+            </div>
+          )}
         </div>
+      )}
 
-        {/* Exibe as informações do usuário */}
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between">
-              <span className="font-semibold">Nome</span>
-              <span>{usuario.nome_completo}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">CPF</span>
-              <span>{usuario.cpf}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">E-mail</span>
-              <span>{usuario.email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Telefone</span>
-              <span>{usuario.telefone || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">CEP</span>
-              <span>{usuario.cep || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Rua</span>
-              <span>{usuario.rua || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Número</span>
-              <span>{usuario.numero || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Cidade</span>
-              <span>{usuario.cidade || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Estado</span>
-              <span>{usuario.estado || 'Não informado'}</span>
-            </div>
-          </div>
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+        >
+          {isEditing ? 'Cancelar' : 'Alterar Dados'}
+        </button>
+      </div>
 
-          {/* Botão para excluir o usuário */}
-          <div className="text-center mt-4">
-            <button
-              onClick={handleDelete}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Excluir Conta
-            </button>
-          </div>
-        </div>
+      {/* Botão de exclusão */}
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={handleDelete}
+          className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+        >
+          Excluir Conta
+        </button>
       </div>
     </div>
   );
 };
 
-export default DadosUsuarios;
+export default DadosUsuario;

@@ -108,7 +108,6 @@ const Cadastrar = () => {
       localStorage.setItem('registro', JSON.stringify(inputValue)); // Salvando o registro no localStorage
   
       const data = await response.json();
-      alert(data.message);
       navigate('/'); // Redirecionar para a página de login após o cadastro bem-sucedido
     } catch (error) {
       console.error("Erro:", error);

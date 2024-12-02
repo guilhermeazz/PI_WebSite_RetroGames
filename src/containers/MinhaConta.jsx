@@ -50,16 +50,6 @@ const MinhaConta = () => {
                                     </tr>
                                     <tr>
                                         <td className="py-2 px-4">
-                                            <Link to="alterar-dados" className="hover:text-blue-500 font-bold">Alterar Dados</Link>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-2 px-4">
-                                            <Link to="cadastro-produto" className="hover:text-blue-500 font-bold">Cadastro Produto</Link>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-2 px-4">
                                             <Link to="Carrinho" className="hover:text-blue-500 font-bold">Carrinho</Link>
                                         </td>
                                     </tr>

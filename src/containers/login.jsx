@@ -78,6 +78,16 @@ const Login = () => {
 
       const data = await response.json();
 
+      console.log('Resposta do servidor:', data); // Log da resposta para verificar o conteúdo
+
+      // Verifique se o ID do usuário está presente na resposta
+      if (data && data.id_usuario) {
+        // Armazena o ID do usuário no localStorage
+        localStorage.setItem('userId', data.id_usuario);
+      } else {
+        alert('ID de usuário não encontrado na resposta.');
+      }  
+
       // Salva o token com base no estado do "Lembre-me"
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem('authToken', data.token);
