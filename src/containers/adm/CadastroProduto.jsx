@@ -9,7 +9,8 @@ const CadastrarProduto = () => {
     qtd_estoque: '',
     promocao: false,
     categoria: '',
-    plataforma: ''
+    plataforma: '',
+    porcentagem_promocao: 0 // Valor inicial
   });
 
   const handleInputChange = (e) => {
@@ -27,12 +28,25 @@ const CadastrarProduto = () => {
     }));
   };
 
+  const handlePromocaoChange = (e) => {
+    const { value } = e.target;
+    setProduto(prevState => ({
+      ...prevState,
+      promocao: value === 'true',
+      porcentagem_promocao: value === 'true' ? prevState.porcentagem_promocao : 0
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
     for (const key in produto) {
-      formData.append(key, produto[key]);
+      if (key !== 'promocao') { // Ignorar o campo promocao, pois estamos salvando porcentagem_promocao em seu lugar
+        formData.append(key, produto[key]);
+      } else {
+        formData.append(key, produto.porcentagem_promocao);
+      }
     }
 
     try {
@@ -51,7 +65,7 @@ const CadastrarProduto = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-1 text-white p-6">
+    <div className="min-h-screen bg-primary-1 text-black p-6">
       <h1 className="text-2xl font-bold mb-4">Cadastrar Produto</h1>
       <form onSubmit={handleSubmit} className="bg-primary-3 p-4 rounded-lg flex flex-col space-y-4">
         <label className="flex flex-col">
@@ -76,18 +90,37 @@ const CadastrarProduto = () => {
         </label>
         <label className="flex flex-col">
           Promoção:
-          <select id="promocao" value={produto.promocao} onChange={handleInputChange} required className="p-2 rounded">
+          <select id="promocao" value={produto.promocao} onChange={handlePromocaoChange} required className="p-2 rounded">
             <option value={false}>Não</option>
             <option value={true}>Sim</option>
           </select>
         </label>
+        {produto.promocao && (
+          <label className="flex flex-col">
+            Porcentagem da Promoção:
+            <input type="number" id="porcentagem_promocao" value={produto.porcentagem_promocao} onChange={handleInputChange} required className="p-2 rounded" />
+          </label>
+        )}
         <label className="flex flex-col">
           Categoria:
-          <input type="text" id="categoria" value={produto.categoria} onChange={handleInputChange} required className="p-2 rounded" />
+          <select id="categoria" value={produto.categoria} onChange={handleInputChange} required className="p-2 rounded">
+            <option value="">Selecione uma categoria</option>
+            <option value="Ação">Ação</option>
+            <option value="Aventura">Aventura</option>
+            <option value="Corrida">Corrida</option>
+            <option value="Puzzle">Puzzle</option>
+          </select>
         </label>
         <label className="flex flex-col">
           Plataforma:
-          <input type="text" id="plataforma" value={produto.plataforma} onChange={handleInputChange} required className="p-2 rounded" />
+          <select id="plataforma" value={produto.plataforma} onChange={handleInputChange} required className="p-2 rounded">
+            <option value="">Selecione uma plataforma</option>
+            <option value="PlayStation 1">PlayStation 1</option>
+            <option value="PlayStation 2">PlayStation 2</option>
+            <option value="GameCube">GameCube</option>
+            <option value="Super Nintendo">Super Nintendo</option>
+            <option value="Atari">Atari</option>
+          </select>
         </label>
         <button type="submit" className="bg-primary-4 p-2 rounded text-black hover:bg-primary-5 hover:text-white">Cadastrar</button>
       </form>

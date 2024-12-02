@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/global/logo.png';
 import Input from '../components/Inputslc';
 import Botaolc from '../components/botaolc';
-import BotaoLink from '../components/BotaoLink';
+import BotaoLink from '../components/botaoLink';
 
 const Login = () => {
   const [inputValue, setInputValue] = useState({

@@ -10,7 +10,9 @@ import AlterarDados from './containers/AlterarDados';
 import Favoritos from './containers/Favoritos';
 import Footer from './containers/Footer';
 import CadastroProduto from './containers/CadastroProduto';
-
+import Categorias from './containers/Categorias';
+import Jogos from './containers/Jogos';
+import JogoDetalhe from './components/jogoDetalhe';
 
 import Admin from './containers/adm/HomeAdm';
 import GestaoUsuarios from './containers/adm/GestaoUsuarios';
@@ -39,6 +41,9 @@ function Router() {
             <Route path="favoritos" element={<Favoritos />} />
             <Route path="cadastro-produto" element={<CadastroProduto />} />
           </Route>
+          <Route path="/categorias" element={<Categorias />} />
+          <Route path="/jogos" element={<Jogos />} />
+          <Route path="/jogo/:id" element={<JogoDetalhe />} />
 
           <Route path="/admin" element={<Admin />} /> 
           <Route path="/gestao-usuarios" element={<GestaoUsuarios />} /> 

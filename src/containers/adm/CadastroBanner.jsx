@@ -26,9 +26,9 @@ const CadastrarBanner = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    for (const key in banner) {
-      formData.append(key, banner[key]);
-    }
+    formData.append('descricao', banner.descricao);
+    formData.append('imagem', banner.imagem);
+    formData.append('link', banner.link);
 
     try {
       const response = await fetch('http://localhost/retrozone/api/promocao/create.php', {
@@ -37,6 +37,12 @@ const CadastrarBanner = () => {
       });
 
       const data = await response.json();
+      
+      if (!response.ok) {
+        alert(`Erro ao cadastrar banner: ${data.message}`);
+        return;
+      }
+
       alert(data.message);
 
     } catch (error) {
@@ -46,9 +52,9 @@ const CadastrarBanner = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-1 text-white p-6">
+    <div className="min-h-screen bg-primary-1 text-black p-6">
       <h1 className="text-2xl font-bold mb-4">Cadastrar Banner</h1>
-      <form onSubmit={handleSubmit} className="bg-primary-3 p-4 rounded-lg flex flex-col space-y-4 text-black">
+      <form onSubmit={handleSubmit} className="bg-primary-3 p-4 rounded-lg flex flex-col space-y-4">
         <label className="flex flex-col">
           Descrição:
           <textarea id="descricao" value={banner.descricao} onChange={handleInputChange} required className="p-2 rounded"></textarea>
@@ -61,7 +67,7 @@ const CadastrarBanner = () => {
           Link:
           <input type="text" id="link" value={banner.link} onChange={handleInputChange} required className="p-2 rounded" />
         </label>
-        <button type="submit" className="bg-primary-4 p-2 rounded text-black hover:bg-primary-5 hover:text-white">Cadastrar</button>
+        <button type="submit" className="bg-primary-4 p-2 rounded hover:bg-primary-5">Cadastrar</button>
       </form>
     </div>
   );
