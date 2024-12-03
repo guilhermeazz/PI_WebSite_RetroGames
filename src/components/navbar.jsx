@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../assets/global/logo.png';
-import { MagnifyingGlassCircleIcon, ShoppingCartIcon, UserIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/solid';
+import { ShoppingCartIcon } from '@heroicons/react/24/solid';
 
 const Nav = () => {
     const [userName, setUserName] = useState('');
@@ -20,8 +20,12 @@ const Nav = () => {
         if (authToken) {
             navigate('/minha-conta');
         } else {
-            navigate('/');
+            navigate('/'); // Redireciona para a página de login quando não logado
         }
+    };
+
+    const handleSobreClick = () => {
+        navigate('/sobre');
     };
 
     return (
@@ -34,32 +38,40 @@ const Nav = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-primary-2 px-6 py-1 rounded-lg flex space-x-4 items-center w-full max-w-6xl">
-                    <input type="text" className="p-2 rounded-md w-full" placeholder="Buscar..." />
-                    <button aria-label="Buscar">
-                        <MagnifyingGlassCircleIcon className="h-10 w-10 text-white fill-current" />
-                    </button>
+                <div className="bg-primary-2 px-6 py-1 rounded-lg flex space-x-8 items-center w-full max-w-6xl justify-between font-extrabold ">
+                    <div className="flex space-x-20 px-10">
+                        <Link to="/home" className="text-lg text-white hover:underline">Home</Link>
+                        <Link to="/jogos" className="text-lg text-white hover:underline">Jogos</Link>
+                        <Link to="/categorias" className="text-lg text-white hover:underline">Categorias</Link>
+                        {userName && (
+                            <span className="text-white hover:text-primary-4">Seja bem-vindo, {userName}!</span>
+                        )}
+                    </div>
+                    <div className="flex space-x-4">
+                        <button 
+                            className="min-w-36 max-w-36 bg-primary-3 text-white p-2 rounded-lg" 
+                            onClick={handleSobreClick}
+                        >
+                            Sobre
+                        </button>
+                        <button 
+                            className={`min-w-36 max-w-36 bg-primary-3 text-white p-2 rounded-lg ${authToken ? 'bg-green-500' : ''}`} 
+                            onClick={handleUserIconClick}
+                        >
+                            {authToken ? 'Perfil' : 'Login/Cadastro'}
+                        </button>
+                        <div 
+                            className="min-w-28 max-w-28 bg-primary-3 text-white p-2 rounded-lg flex items-center justify-center" 
+                            onClick={() => navigate('/carrinho')}
+                        >
+                            <ShoppingCartIcon className="h-10 w-10" aria-label="Carrinho" />
+                        </div>
+                        
+                    </div>
 
-                    <div className="bg-primary-3 text-white p-2 rounded-lg" onClick={() => navigate('/suporte')}>
-                        <ChatBubbleLeftIcon className="h-10 w-10" aria-label="Chat" />
-                    </div>
-                    <div className={`bg-primary-3 text-white p-2 rounded-lg ${authToken ? 'bg-green-500' : ''}`} onClick={handleUserIconClick}>
-                        <UserIcon className="h-10 w-10" aria-label="Perfil" />
-                    </div>
-                    <div className="bg-primary-3 text-white p-2 rounded-lg" onClick={() => navigate('/carrinho')}>
-                        <ShoppingCartIcon className="h-10 w-10" aria-label="Carrinho" />
-                    </div>
                 </div>
             </nav>
-
-            <div className="bg-gray-900 py-2 flex justify-around space-x-6 - px-20">
-                <Link to="/home" className="text-white hover:underline">Home</Link>
-                <Link to="/jogos" className="text-white hover:underline">Jogos</Link>
-                <Link to="/categorias" className="text-white hover:underline">Categorias</Link>
-                {userName && (
-                    <span className="text-white hover:text-primary-4">Seja bem-vindo, {userName}!</span>
-                )}
-            </div>
+            <div className='w-full h-5 bg-primary-5'></div>
         </>
     );
 }

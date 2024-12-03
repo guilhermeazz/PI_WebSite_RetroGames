@@ -19,11 +19,29 @@ const DadosUsuario = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userId = 1; // Substitua pelo ID do usuário logado
-    fetch(`http://localhost/retrozone/api/usuario/read_single.php?id=${userId}`)
-      .then(response => response.json())
-      .then(data => setUsuario(data))
-      .catch(error => console.error('Erro ao buscar detalhes do usuário:', error));
+    const userJSON = localStorage.getItem('user') || sessionStorage.getItem('user');
+    console.log("userJSON:", userJSON); // Verificação no console
+    if (userJSON && userJSON !== "undefined") {
+      try {
+        const user = JSON.parse(userJSON);
+        console.log("user:", user); // Verificação no console
+
+          const apiUrl = `http://localhost/retrozone/api/usuario/read_single.php?id=${user}`;
+          console.log("API URL:", apiUrl); // Verificação no console
+          fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+              console.log("API Response:", data); // Verificação no console
+              setUsuario(data);
+            })
+            .catch(error => console.error('Erro ao buscar detalhes do usuário:', error));
+
+      } catch (error) {
+        console.error('Erro ao fazer parsing dos dados do usuário:', error);
+      }
+    } else {
+      console.error('Dados do usuário não encontrados');
+    }
   }, []);
 
   const handleInputChange = (e) => {
@@ -43,7 +61,7 @@ const DadosUsuario = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...usuario, id_usuario: 1 })  // Substitua pelo ID do usuário logado
+        body: JSON.stringify({ ...usuario, id_usuario: usuario.id_usuario }) // Usando o ID correto do usuário
       });
 
       const data = await response.json();
@@ -64,7 +82,7 @@ const DadosUsuario = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id_usuario: 1 })  // Substitua pelo ID do usuário logado
+          body: JSON.stringify({ id_usuario: usuario.id_usuario }) // Usando o ID correto do usuário
         });
 
         const data = await response.json();

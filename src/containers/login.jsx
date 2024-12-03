@@ -42,16 +42,20 @@ const Login = () => {
     }
   };
 
+  const handleRememberMeChange = () => {
+    setRememberMe(prev => !prev); // Alterna o estado do checkbox
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!inputValue.email || !inputValue.senha) {
       alert('Por favor, preencha todos os campos.');
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
       const response = await fetch('http://localhost/retrozone/api/usuario/login.php', {
         method: 'POST',
@@ -63,30 +67,33 @@ const Login = () => {
           senha: inputValue.senha
         })
       });
-  
+
       setIsLoading(false);
-  
+
       if (!response.ok) {
         const errorDetails = await response.json();
         alert(`Erro ao fazer login: ${errorDetails.message}`);
         return;
       }
-  
+
       const data = await response.json();
-  
-      // Salva o token e os dados do usuário com base no estado do "Lembre-me"
+      console.log("API Response:", data); // Verificação no console
+
+      // Salva o token e o ID do usuário com base no estado do "Lembre-me"
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem('authToken', data.token);
-      storage.setItem('user', JSON.stringify(data.user)); // Salvando os dados do usuário
-  
+      storage.setItem('user', JSON.stringify(data.id_usuario)); // Salvando os dados do usuário
+
+      // Verificar se os dados foram armazenados corretamente
+      console.log("Dados salvos no armazenamento:", storage.getItem('user')); // Verificação no console
+
       navigate('/home');
-  
+
     } catch (error) {
       setIsLoading(false);
       alert('Erro ao fazer login');
     }
   };
-  
 
   const isFormValid = inputValue.email && inputValue.senha;
 

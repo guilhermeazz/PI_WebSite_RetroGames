@@ -47,13 +47,13 @@ function Router() {
             <Route path="dados-usuario" element={<DadosUsuario />} />
             <Route path="favoritos" element={<Favoritos />} />
             <Route path="cadastro-produto" element={<CadastroProduto />} />
-            <Route path="pagamento" element={<Pagamento />} /> {/* Confirmação de pagamento */}
+            <Route path="pagamento" element={<Pag />} /> {/* Confirmação de pagamento */}
           </Route>
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/jogos" element={<Jogos />} />
           <Route path="/jogo/:id" element={<JogoDetalhe />} />
           <Route path="/carrinho" element={<Carrinho />} />
-          <Route path="/pagamento" element={<Pag />} />
+
           
           <Route path="/jogos/plataforma/:valor" element={<JogosFiltrados />} /> 
           <Route path="/jogos/categoria/:valor" element={<JogosFiltrados />} />
