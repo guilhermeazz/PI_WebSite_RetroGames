@@ -1,93 +1,139 @@
-import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom'; // Importa useNavigate para redirecionamento
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Nav from '../components/navbar';
+import Footer from '../containers/Footer';
+import { FaEdit } from 'react-icons/fa'; // Certifique-se de que este pacote está instalado
 
-import logo from '../assets/global/logo.png';
-import SetaEsquerda from '../assets/global/img-seta-esquerda.png';
+const DadosUsuario = () => {
+  const [usuario, setUsuario] = useState({
+    nome_completo: '',
+    email: '',
+    telefone: '',
+    cep: '',
+    rua: '',
+    numero: '',
+    cidade: '',
+    estado: ''
+  });
+  const [isEditing, setIsEditing] = useState(null);
+  const navigate = useNavigate();
 
-const MinhaConta = () => {
-    const navigate = useNavigate(); // Hook para redirecionar
+  useEffect(() => {
+    const userId = 1; // Substitua pelo ID do usuário logado
+    fetch(`http://localhost/retrozone/api/usuario/read_single.php?id=${userId}`)
+      .then(response => response.json())
+      .then(data => setUsuario(data))
+      .catch(error => console.error('Erro ao buscar detalhes do usuário:', error));
+  }, []);
 
-    const handleLogout = () => {
-        // Remove o token do armazenamento
-        localStorage.removeItem('authToken');
-        sessionStorage.removeItem('authToken');
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setUsuario(prevState => ({
+      ...prevState,
+      [id]: value
+    }));
+  };
 
-        // Redireciona para a página de login
-        navigate('/');
-    };
+  const handleSave = async (e, field) => {
+    e.preventDefault();
 
-    return (
-        <>
-            <div className='flex h-screen'>
-                <div className='w-full'>
-                    <div className='flex items-center justify-between h-24 px-20 bg-white shadow'>
-                        <div className='flex-shrink-0'>
-                            <Link to='/home'>
-                                <img src={SetaEsquerda} alt="Seta" className='h-10 w-10' />
-                            </Link>
-                        </div>
+    try {
+      const response = await fetch('http://localhost/retrozone/api/usuario/update.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...usuario, id_usuario: 1 })  // Substitua pelo ID do usuário logado
+      });
 
-                        <div className='flex-1 flex justify-center'>
-                            <Link to='/home'>
-                                <img src={logo} alt="Logo" className='h-12' />
-                            </Link>
-                        </div>
-                    </div>
+      const data = await response.json();
+      alert(data.message);
+      setIsEditing(null);
 
-                    <div className='flex justify-between items-center h-96 px-36'>
-                        <div className='flex'>
-                            <table className="w-full text-center border border-black text-left">
-                                <thead>
-                                    <tr className="bg-gray-200">
-                                        <th className="py-2 px-4">Menu</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td className="py-2 px-4">
-                                            <Link to="dados-usuario" className="hover:text-blue-500 font-bold">Meus Dados</Link>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-2 px-4">
-                                            <Link to="Carrinho" className="hover:text-blue-500 font-bold">Carrinho</Link>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-2 px-4">
-                                            <Link to="favoritos" className="hover:text-blue-500 font-bold">Favoritos</Link>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-2 px-4">
-                                            <Link to="Pagamento" className="hover:text-blue-500 font-bold">Pagamento</Link>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-2 px-4">
-                                            {/* Botão de logout com a função handleLogout */}
-                                            <button
-                                                onClick={handleLogout}
-                                                className="hover:text-red-500 font-bold">
-                                                Logout
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    {/* Adicione mais links aqui, se necessário */}
-                                </tbody>
-                            </table>
-                        </div>
+    } catch (error) {
+      console.error("Erro ao atualizar usuário:", error);
+      alert("Erro ao atualizar usuário");
+    }
+  };
 
-                        <div className='flex-1 flex flex-col items-center h-36'>
-                            <div>
-                                <Outlet /> {/* Aqui é onde a rota filha será renderizada */}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+      try {
+        const response = await fetch('http://localhost/retrozone/api/usuario/delete.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id_usuario: 1 })  // Substitua pelo ID do usuário logado
+        });
+
+        const data = await response.json();
+        alert(data.message);
+        navigate('/');  // Redirecionar após excluir a conta
+
+      } catch (error) {
+        console.error("Erro ao excluir conta:", error);
+        alert("Erro ao excluir conta");
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    // Remover token e informações do usuário do localStorage e sessionStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('user');
+    
+    alert("Usuário desconectado");
+    navigate('/');  // Redirecionar para a página de login
+  };
+
+  const fieldsToShow = ["nome_completo", "email", "telefone", "cep", "rua", "numero", "cidade", "estado"];
+
+  return (
+    <div className="flex flex-col min-h-screen bg-white text-black">
+      <Nav />
+      <div className="flex-grow container mx-auto px-4 py-10">
+        <h1 className="text-3xl font-bold mb-6">Dados do Usuário</h1>
+        <div className="space-y-4">
+          {fieldsToShow.map((field) => (
+            <div key={field} className="flex items-center">
+              <span className="font-semibold">{field.replace('_', ' ')}:</span>
+              {isEditing === field ? (
+                <input
+                  type="text"
+                  id={field}
+                  value={usuario[field]}
+                  onChange={handleInputChange}
+                  className="ml-2 p-2 border border-gray-300 rounded"
+                  onBlur={(e) => handleSave(e, field)}
+                />
+              ) : (
+                <span className="ml-2">{usuario[field]}</span>
+              )}
+              <FaEdit className="ml-4 cursor-pointer text-blue-500" onClick={() => setIsEditing(field)} />
             </div>
-        </>
-    );
+          ))}
+        </div>
+        <div className="mt-8">
+          <button
+            className="bg-red-600 text-white p-3 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 mr-4"
+            onClick={handleDeleteAccount}
+          >
+            Excluir Minha Conta
+          </button>
+          <button
+            className="bg-blue-600 text-white p-3 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
 };
 
-export default MinhaConta;
+export default DadosUsuario;
