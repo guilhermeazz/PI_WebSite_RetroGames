@@ -1,0 +1,11 @@
+Instalar antes de rodas o projeto:
+
+Tailwind:
+npm install -D tailwindcss
+npx tailwindcss init
+
+Herocoins
+npm install @heroicons/react
+
+react-router-dom:
+npm install react-router-dom
