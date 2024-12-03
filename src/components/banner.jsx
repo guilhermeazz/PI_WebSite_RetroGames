@@ -42,7 +42,7 @@ const Banner = () => {
             src={`data:image/jpeg;base64,${banners[currentIndex].imagem}`}
             alt="Banner"
             className="w-full h-full object-cover"
-            onClick={() => handleImageClick(`/produto/${banners[currentIndex].id_produto}`)}
+    
           />
           <button className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-primary-5 text-white p-2 rounded-full" onClick={handlePrevious}>
             &#10094;

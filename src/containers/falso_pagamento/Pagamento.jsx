@@ -1,79 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 
 const Pagamento = () => {
-  const [products] = useState([
-    { name: "Produto 1", price: 50 },
-    { name: "Produto 2", price: 30 },
-    { name: "Produto 3", price: 20 },
-  ]);
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [isPaid, setIsPaid] = useState(false);
-
-  const handleAddToCart = (product) => {
-    setSelectedProducts((prev) => [...prev, product]);
-  };
-
-  const handleRemoveFromCart = (product) => {
-    setSelectedProducts((prev) => prev.filter((p) => p.name !== product.name));
-  };
-
-  const handleConfirmPayment = () => {
-    setIsPaid(true); // Marca o pagamento como confirmado
-  };
+  const location = useLocation();
+  const { total, carrinho } = location.state || { total: 0, carrinho: [] };
 
   // Gera a mensagem com a lista de produtos para enviar pelo WhatsApp
   const generateWhatsAppMessage = () => {
     let message = "Olá, gostaria de comprar os seguintes produtos:\n\n";
-    selectedProducts.forEach((product) => {
-      message += `${product.name} - R$ ${product.price}\n`;
+    carrinho.forEach((item) => {
+      message += `${item.nome} - R$ ${item.valor.toFixed(2)} x ${item.quantidade}\n`;
     });
-    message += `\nTotal: R$ ${selectedProducts.reduce((acc, product) => acc + product.price, 0)}`;
+    message += `\nTotal: R$ ${total.toFixed(2)}`;
     return message;
   };
 
-  const whatsappNumber = '+5515996607444'; // Substitua SEUNUMERO pelo seu número de WhatsApp
+  const whatsappNumber = '+5515996607444'; // Substitua pelo seu número de WhatsApp
   const whatsappLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(generateWhatsAppMessage())}`;
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      <h1>Selecione seus produtos</h1>
-      <ul>
-        {products.map((product) => (
-          <li key={product.name}>
-            <p>{product.name} - R$ {product.price}</p>
-            <button onClick={() => handleAddToCart(product)}>
-              Adicionar ao carrinho
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className='flex flex-col gap-4' style={{ textAlign: 'center', marginTop: '20px' }}>
+      <h1>Pagamento</h1>
+      <h2>Total da Compra: R$ {total.toFixed(2)}</h2>
 
-      <h2>Carrinho:</h2>
-      <ul>
-        {selectedProducts.map((product) => (
-          <li key={product.name}>
-            <p>{product.name} - R$ {product.price}</p>
-            <button onClick={() => handleRemoveFromCart(product)}>Remover</button>
-          </li>
-        ))}
-      </ul>
+      <p>Escaneie o QR Code abaixo para enviar os detalhes para o WhatsApp:</p>
+      
+      <div className="flex justify-center">
+        <QRCodeSVG value={whatsappLink} size={256} />
+      </div>
 
-      <h2>Total: R$ {selectedProducts.reduce((acc, product) => acc + product.price, 0)}</h2>
-
-      <button onClick={handleConfirmPayment} disabled={selectedProducts.length === 0}>
-        Confirmar Pagamento
-      </button>
-
-      {isPaid && (
-        <div>
-          <h3>Pagamento Confirmado!</h3>
-          <p>Escaneie o QR Code abaixo para enviar a lista de produtos pelo WhatsApp:</p>
-          <QRCodeSVG value={whatsappLink} size={256} />
-        </div>
-      )}
+      <p>Ou clique abaixo para enviar via WhatsApp:</p>
+      <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+        <button className="bg-green-600 text-white p-4 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+          Enviar para o WhatsApp
+        </button>
+      </a>
     </div>
   );
 };
 
 export default Pagamento;
+

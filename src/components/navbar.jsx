@@ -28,7 +28,7 @@ const Nav = () => {
     return (
         <>
             <nav className="bg-primary-1 px-4 flex justify-between items-center py-2 gap-6 ">
-                <div className='bg-primary-2 pl-6 pr-40 rounded-xl'>
+                <div className='bg-primary-2 pl-6 pr-32 rounded-xl'>
                     <div className='bg-primary-3 pl-6 pr-20 rounded-lg'>
                         <div className="bg-primary-4 p-2 rounded-lg" onClick={() => navigate('/home')}>
                             <img src={Logo} alt='logo da Retro Games' className="h-12 min-w-24" />
@@ -36,12 +36,13 @@ const Nav = () => {
                     </div>
                 </div>
                 <div className="bg-primary-2 px-6 py-1 rounded-lg flex space-x-8 items-center w-full max-w-6xl justify-between font-extrabold ">
-                    <div className="flex space-x-20 px-10">
+                    <div className="flex space-x-10 px-10">
                         <Link to="/home" className="text-lg text-white hover:underline">Home</Link>
                         <Link to="/jogos" className="text-lg text-white hover:underline">Jogos</Link>
                         <Link to="/categorias" className="text-lg text-white hover:underline">Categorias</Link>
                         <Link to="/sobre" className="text-lg text-white hover:underline">Sobre</Link>
-                        <Link to="/ajuda" className="text-lg text-white hover:underline">Ajuda</Link>
+                        <Link to="/" className="text-lg text-white hover:underline">Ajuda</Link>
+                        <Link to="/favoritos" className="text-lg text-white hover:underline">Favoritos</Link>
                         {userName && (
                             <span className="text-white hover:text-primary-4">Seja bem-vindo, {userName}!</span>
                         )}

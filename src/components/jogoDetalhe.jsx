@@ -43,6 +43,19 @@ const JogoDetalhe = () => {
     alert('Item adicionado ao carrinho!');
   };
 
+  const adicionarAosFavoritos = () => {
+    let favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+    const itemIndex = favoritos.findIndex(item => item.id === jogo.id);
+
+    if (itemIndex === -1) {
+      favoritos.push({ ...jogo });
+      localStorage.setItem('favoritos', JSON.stringify(favoritos));
+      alert('Item adicionado aos favoritos!');
+    } else {
+      alert('Este item já está nos favoritos!');
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-black">
       <Nav />
@@ -62,18 +75,26 @@ const JogoDetalhe = () => {
             ) : (
               <p className="text-black font-bold">R${jogo.valor ? jogo.valor.toFixed(2) : 'N/A'}</p>
             )}
-            <button 
-              className="mt-4 bg-blue-600 text-white p-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              onClick={adicionarAoCarrinho}
-            >
-              Adicionar ao Carrinho
-            </button>
-            <button 
-              className="mt-4 bg-green-600 text-white p-4 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 ml-4"
-              onClick={() => navigate('/carrinho')}
-            >
-              Ir para o Carrinho
-            </button>
+            <div className="mt-4 space-x-4">
+              <button 
+                className="bg-blue-600 text-white p-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                onClick={adicionarAoCarrinho}
+              >
+                Adicionar ao Carrinho
+              </button>
+              <button 
+                className="bg-green-600 text-white p-4 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                onClick={() => navigate('/carrinho')}
+              >
+                Ir para o Carrinho
+              </button>
+              <button 
+                className="bg-yellow-500 text-white p-4 rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
+                onClick={adicionarAosFavoritos}
+              >
+                Adicionar aos Favoritos
+              </button>
+            </div>
           </div>
           <div className="md:w-1/3">
             <img src={`data:image/jpeg;base64,${jogo.imagem}`} alt={jogo.nome} className="w-full h-64 object-cover rounded-lg mb-4" />

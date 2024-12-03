@@ -162,12 +162,6 @@ const DadosUsuario = () => {
             >
               Alterar Senha
             </button>
-            <button
-              className="bg-orange-600 text-white p-3 rounded hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-              onClick={handleViewOrders}
-            >
-              Ver Meus Pedidos
-            </button>
           </div>
         </div>
       </div>

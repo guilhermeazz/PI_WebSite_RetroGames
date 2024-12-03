@@ -27,9 +27,9 @@ const Carrinho = () => {
   };
 
   const finalizarCompra = () => {
-    alert('Compra finalizada!');
-    limparCarrinho();
-    navigate('/');
+    // Calculando o total
+    const total = carrinho.reduce((acc, item) => acc + item.valor * item.quantidade, 0);
+    navigate('/pagamento', { state: { total, carrinho } });
   };
 
   return (
