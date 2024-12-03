@@ -60,6 +60,11 @@ const MinhaConta = () => {
                                     </tr>
                                     <tr>
                                         <td className="py-2 px-4">
+                                            <Link to="Pagamento" className="hover:text-blue-500 font-bold">Pagamento</Link>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2 px-4">
                                             {/* Botão de logout com a função handleLogout */}
                                             <button
                                                 onClick={handleLogout}
