@@ -13,6 +13,7 @@ import Jogos from './containers/Jogos';
 import JogoDetalhe from './components/jogoDetalhe';
 import JogosFiltrados from './containers/JogoCat';
 import Carrinho from './containers/Carrinho';
+import Pag from './containers/falso_pagamento/Pagamento';
 
 import Admin from './containers/adm/HomeAdm';
 import GestaoUsuarios from './containers/adm/GestaoUsuarios';
@@ -52,6 +53,7 @@ function Router() {
           <Route path="/jogos" element={<Jogos />} />
           <Route path="/jogo/:id" element={<JogoDetalhe />} />
           <Route path="/carrinho" element={<Carrinho />} />
+          <Route path="/pagamento" element={<Pag />} />
           
           <Route path="/jogos/plataforma/:valor" element={<JogosFiltrados />} /> 
           <Route path="/jogos/categoria/:valor" element={<JogosFiltrados />} />
