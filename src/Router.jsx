@@ -14,6 +14,10 @@ import JogoDetalhe from './components/jogoDetalhe';
 import JogosFiltrados from './containers/JogoCat';
 import Carrinho from './containers/Carrinho';
 import Pag from './containers/falso_pagamento/Pagamento';
+import AlterarSenha from './containers/AlterarSenha';
+import MeusPedidos from './containers/MeusPedidos';
+import Sobre from './containers/Sobre';
+import Ajuda from './containers/Ajuda';
 
 import Admin from './containers/adm/HomeAdm';
 import GestaoUsuarios from './containers/adm/GestaoUsuarios';
@@ -25,7 +29,7 @@ import EditarProduto from './containers/adm/EditarProduto';
 import EditarUsuario from './containers/adm/EditarUser';
 import EditarBanner from './containers/adm/EditarBanner';
 
-function Router() {
+function AppRouter() {
   const location = useLocation();
 
   // Condição para verificar se estamos nas rotas de login ou cadastro
@@ -42,19 +46,25 @@ function Router() {
           {/* Páginas de usuário autenticado */}
           <Route path="/home" element={<Home />} />
 
-          {/* Seção de 'Minha Conta' com sub-rotas */}
-          <Route path="/minha-conta" element={<MinhaConta />}>
-            <Route path="dados-usuario" element={<DadosUsuario />} />
-            <Route path="favoritos" element={<Favoritos />} />
-            <Route path="cadastro-produto" element={<CadastroProduto />} />
-            <Route path="pagamento" element={<Pag />} /> {/* Confirmação de pagamento */}
-          </Route>
+          {/* Seção de 'Minha Conta' */}
+          <Route path="/minha-conta" element={<MinhaConta />} />
+
+          {/* Rotas separadas */}
+          <Route path="/dados-usuario" element={<DadosUsuario />} />
+          <Route path="/favoritos" element={<Favoritos />} />
+          <Route path="/cadastro-produto" element={<CadastroProduto />} />
+          <Route path="/pagamento" element={<Pag />} /> {/* Confirmação de pagamento */}
+          <Route path="/alterar-senha" element={<AlterarSenha />} />
+          <Route path="/meus-pedidos" element={<MeusPedidos />} />
+
+          {/* Outras rotas */}
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/jogos" element={<Jogos />} />
           <Route path="/jogo/:id" element={<JogoDetalhe />} />
           <Route path="/carrinho" element={<Carrinho />} />
+          <Route path="/sobre" element={<Sobre />} />
+          <Route path="/ajuda" element={<Ajuda />} />
 
-          
           <Route path="/jogos/plataforma/:valor" element={<JogosFiltrados />} /> 
           <Route path="/jogos/categoria/:valor" element={<JogosFiltrados />} />
 
@@ -67,11 +77,10 @@ function Router() {
           <Route path="/editar-produto/:id" element={<EditarProduto />} />
           <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
           <Route path="/editar-banner/:id" element={<EditarBanner />} />
-          
         </Routes>
       </div>
     </div>
   );
 }
 
-export default Router;
+export default AppRouter;

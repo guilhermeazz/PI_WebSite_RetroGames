@@ -24,9 +24,6 @@ const Nav = () => {
         }
     };
 
-    const handleSobreClick = () => {
-        navigate('/sobre');
-    };
 
     return (
         <>
@@ -43,17 +40,13 @@ const Nav = () => {
                         <Link to="/home" className="text-lg text-white hover:underline">Home</Link>
                         <Link to="/jogos" className="text-lg text-white hover:underline">Jogos</Link>
                         <Link to="/categorias" className="text-lg text-white hover:underline">Categorias</Link>
+                        <Link to="/sobre" className="text-lg text-white hover:underline">Sobre</Link>
+                        <Link to="/ajuda" className="text-lg text-white hover:underline">Ajuda</Link>
                         {userName && (
                             <span className="text-white hover:text-primary-4">Seja bem-vindo, {userName}!</span>
                         )}
                     </div>
                     <div className="flex space-x-4">
-                        <button 
-                            className="min-w-36 max-w-36 bg-primary-3 text-white p-2 rounded-lg" 
-                            onClick={handleSobreClick}
-                        >
-                            Sobre
-                        </button>
                         <button 
                             className={`min-w-36 max-w-36 bg-primary-3 text-white p-2 rounded-lg ${authToken ? 'bg-green-500' : ''}`} 
                             onClick={handleUserIconClick}
