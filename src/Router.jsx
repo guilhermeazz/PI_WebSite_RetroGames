@@ -13,6 +13,8 @@ import CadastroProduto from './containers/CadastroProduto';
 import Categorias from './containers/Categorias';
 import Jogos from './containers/Jogos';
 import JogoDetalhe from './components/jogoDetalhe';
+import JogosFiltrados from './containers/JogoCat';
+import Carrinho from './containers/Carrinho';
 
 import Admin from './containers/adm/HomeAdm';
 import GestaoUsuarios from './containers/adm/GestaoUsuarios';
@@ -20,6 +22,9 @@ import GestaoBanners from './containers/adm/GestaoBanner';
 import GestaoProdutos from './containers/adm/GestaoProdutos';
 import CadastrarBanner from './containers/adm/CadastroBanner';
 import CadastrarProduto from './containers/adm/CadastroProduto';
+import EditarProduto from './containers/adm/EditarProduto';
+import EditarUsuario from './containers/adm/EditarUser';
+import EditarBanner from './containers/adm/EditarBanner';
 
 function Router() {
   const location = useLocation();
@@ -44,6 +49,10 @@ function Router() {
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/jogos" element={<Jogos />} />
           <Route path="/jogo/:id" element={<JogoDetalhe />} />
+          <Route path="/carrinho" element={<Carrinho />} />
+          
+          <Route path="/jogos/plataforma/:valor" element={<JogosFiltrados />} /> 
+          <Route path="/jogos/categoria/:valor" element={<JogosFiltrados />} />
 
           <Route path="/admin" element={<Admin />} /> 
           <Route path="/gestao-usuarios" element={<GestaoUsuarios />} /> 
@@ -51,6 +60,10 @@ function Router() {
           <Route path="/cadastrar-produto" element={<CadastrarProduto />} /> 
           <Route path="/gestao-banner" element={<GestaoBanners />} /> 
           <Route path="/cadastrar-banner" element={<CadastrarBanner />} />
+          <Route path="/editar-produto/:id" element={<EditarProduto />} />
+          <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
+          <Route path="/editar-banner/:id" element={<EditarBanner />} />
+          
         </Routes>
       </div>
     </div>

@@ -65,45 +65,97 @@ const CadastrarProduto = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-1 text-black p-6">
-      <h1 className="text-2xl font-bold mb-4">Cadastrar Produto</h1>
-      <form onSubmit={handleSubmit} className="bg-primary-3 p-4 rounded-lg flex flex-col space-y-4">
+    <div className="min-h-screen bg-white text-black p-6">
+      <h1 className="text-3xl font-semibold text-blue-900 mb-6">Cadastrar Produto</h1>
+      <form onSubmit={handleSubmit} className="bg-blue-100 shadow-lg p-6 rounded-lg max-w-4xl mx-auto space-y-6">
         <label className="flex flex-col">
-          Nome:
-          <input type="text" id="nome" value={produto.nome} onChange={handleInputChange} required className="p-2 rounded" />
+          <span className="text-gray-700">Nome:</span>
+          <input
+            type="text"
+            id="nome"
+            value={produto.nome}
+            onChange={handleInputChange}
+            required
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+          />
         </label>
         <label className="flex flex-col">
-          Descrição:
-          <textarea id="descricao" value={produto.descricao} onChange={handleInputChange} required className="p-2 rounded"></textarea>
+          <span className="text-gray-700">Descrição:</span>
+          <textarea
+            id="descricao"
+            value={produto.descricao}
+            onChange={handleInputChange}
+            required
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+          ></textarea>
         </label>
         <label className="flex flex-col">
-          Imagem:
-          <input type="file" id="imagem" onChange={handleFileChange} required className="p-2 rounded" />
+          <span className="text-gray-700">Imagem:</span>
+          <input
+            type="file"
+            id="imagem"
+            onChange={handleFileChange}
+            required
+            className="p-2 rounded-md border-gray-300 shadow-sm"
+          />
         </label>
         <label className="flex flex-col">
-          Valor:
-          <input type="number" id="valor" value={produto.valor} onChange={handleInputChange} required className="p-2 rounded" />
+          <span className="text-gray-700">Valor:</span>
+          <input
+            type="number"
+            id="valor"
+            value={produto.valor}
+            onChange={handleInputChange}
+            required
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+          />
         </label>
         <label className="flex flex-col">
-          Quantidade em Estoque:
-          <input type="number" id="qtd_estoque" value={produto.qtd_estoque} onChange={handleInputChange} required className="p-2 rounded" />
+          <span className="text-gray-700">Quantidade em Estoque:</span>
+          <input
+            type="number"
+            id="qtd_estoque"
+            value={produto.qtd_estoque}
+            onChange={handleInputChange}
+            required
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+          />
         </label>
         <label className="flex flex-col">
-          Promoção:
-          <select id="promocao" value={produto.promocao} onChange={handlePromocaoChange} required className="p-2 rounded">
+          <span className="text-gray-700">Promoção:</span>
+          <select
+            id="promocao"
+            value={produto.promocao}
+            onChange={handlePromocaoChange}
+            required
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+          >
             <option value={false}>Não</option>
             <option value={true}>Sim</option>
           </select>
         </label>
         {produto.promocao && (
           <label className="flex flex-col">
-            Porcentagem da Promoção:
-            <input type="number" id="porcentagem_promocao" value={produto.porcentagem_promocao} onChange={handleInputChange} required className="p-2 rounded" />
+            <span className="text-gray-700">Porcentagem da Promoção:</span>
+            <input
+              type="number"
+              id="porcentagem_promocao"
+              value={produto.porcentagem_promocao}
+              onChange={handleInputChange}
+              required
+              className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+            />
           </label>
         )}
         <label className="flex flex-col">
-          Categoria:
-          <select id="categoria" value={produto.categoria} onChange={handleInputChange} required className="p-2 rounded">
+          <span className="text-gray-700">Categoria:</span>
+          <select
+            id="categoria"
+            value={produto.categoria}
+            onChange={handleInputChange}
+            required
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+          >
             <option value="">Selecione uma categoria</option>
             <option value="Ação">Ação</option>
             <option value="Aventura">Aventura</option>
@@ -112,8 +164,14 @@ const CadastrarProduto = () => {
           </select>
         </label>
         <label className="flex flex-col">
-          Plataforma:
-          <select id="plataforma" value={produto.plataforma} onChange={handleInputChange} required className="p-2 rounded">
+          <span className="text-gray-700">Plataforma:</span>
+          <select
+            id="plataforma"
+            value={produto.plataforma}
+            onChange={handleInputChange}
+            required
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+          >
             <option value="">Selecione uma plataforma</option>
             <option value="PlayStation 1">PlayStation 1</option>
             <option value="PlayStation 2">PlayStation 2</option>
@@ -122,10 +180,15 @@ const CadastrarProduto = () => {
             <option value="Atari">Atari</option>
           </select>
         </label>
-        <button type="submit" className="bg-primary-4 p-2 rounded text-black hover:bg-primary-5 hover:text-white">Cadastrar</button>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition"
+        >
+          Cadastrar
+        </button>
       </form>
     </div>
   );
-}
+};
 
 export default CadastrarProduto;

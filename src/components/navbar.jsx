@@ -1,11 +1,20 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Importando useNavigate
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../assets/global/logo.png';
 import { MagnifyingGlassCircleIcon, ShoppingCartIcon, UserIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/solid';
 
 const Nav = () => {
+    const [userName, setUserName] = useState('');
     const navigate = useNavigate();
     const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.nome_completo) {
+            const firstName = user.nome_completo.split(' ')[0]; // Pega o primeiro nome
+            setUserName(firstName);
+        }
+    }, []);
 
     const handleUserIconClick = () => {
         if (authToken) {
@@ -47,6 +56,9 @@ const Nav = () => {
                 <Link to="/home" className="text-white hover:underline">Home</Link>
                 <Link to="/jogos" className="text-white hover:underline">Jogos</Link>
                 <Link to="/categorias" className="text-white hover:underline">Categorias</Link>
+                {userName && (
+                    <span className="text-white hover:text-primary-4">Seja bem-vindo, {userName}!</span>
+                )}
             </div>
         </>
     );

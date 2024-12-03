@@ -1,111 +1,134 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Nav from '../components/navbar';
+import Footer from '../containers/Footer';
+import { FaEdit } from 'react-icons/fa';
 
-const DadosUsuarios = () => {
-  const [usuario, setUsuario] = useState(null); // Para armazenar os dados do usuário
+const DadosUsuario = () => {
+  const [usuario, setUsuario] = useState({
+    nome_completo: '',
+    email: '',
+    telefone: '',
+    cep: '',
+    rua: '',
+    numero: '',
+    cidade: '',
+    estado: ''
+  });
+  const [isEditing, setIsEditing] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Função para buscar os dados do usuário
-    const fetchUsuario = async () => {
-      try {
-        const response = await fetch('http://localhost/retrozone/api/usuario/read.php'); // URL do backend para buscar os dados
-        if (!response.ok) {
-          throw new Error('Erro ao buscar os dados do usuário');
-        }
-        const data = await response.json();
-        setUsuario(data); // Armazena os dados no estado
-      } catch (error) {
-        console.error('Erro:', error);
-      }
-    };
+    // Substitua pelo ID do usuário logado
+    const userId = 1;
 
-    fetchUsuario(); // Chama a função ao montar o componente
+    fetch(`http://localhost/retrozone/api/usuario/read_single.php?id=${userId}`)
+      .then(response => response.json())
+      .then(data => setUsuario(data))
+      .catch(error => console.error('Erro ao buscar detalhes do usuário:', error));
   }, []);
 
-  // Função para excluir o usuário
-  const handleDelete = async () => {
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setUsuario(prevState => ({
+      ...prevState,
+      [id]: value
+    }));
+  };
+
+  const handleSave = async (e, field) => {
+    e.preventDefault();
+
     try {
-      const response = await fetch('http://localhost/retrozone/api/delete_usuario.php', { // URL do backend para deletar o usuário
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_usuario: usuario.id_usuario }), // Envia o ID do usuário a ser excluído
+      const response = await fetch('http://localhost/retrozone/api/usuario/update.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...usuario, id_usuario: 1 })  // Substitua pelo ID do usuário logado
       });
 
-      if (!response.ok) {
-        throw new Error('Erro ao excluir o usuário');
-      }
+      const data = await response.json();
+      alert(data.message);
+      setIsEditing(null);
 
-      alert('Usuário excluído com sucesso!');
-      window.location.href = '/login'; // Redireciona para a página de login após exclusão
     } catch (error) {
-      console.error('Erro:', error);
+      console.error("Erro ao atualizar usuário:", error);
+      alert("Erro ao atualizar usuário");
     }
   };
 
-  if (!usuario) {
-    return <p>Carregando...</p>; // Exibe uma mensagem de carregamento enquanto os dados são recuperados
-  }
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+      try {
+        const response = await fetch('http://localhost/retrozone/api/usuario/delete.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id_usuario: 1 })  // Substitua pelo ID do usuário logado
+        });
+
+        const data = await response.json();
+        alert(data.message);
+        navigate('/');  // Redirecionar após excluir a conta
+
+      } catch (error) {
+        console.error("Erro ao excluir conta:", error);
+        alert("Erro ao excluir conta");
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    // Implementar a lógica de logout conforme necessário
+    alert("Usuário desconectado");
+    navigate('/login');  // Redirecionar para a página de login
+  };
 
   return (
-    <div className="flex justify-center mt-8">
-      <div className="w-full max-w-2xl p-4">
-        <div className="text-center mb-4">
-          <h1 className="font-bold text-xl">Meus Dados</h1>
+    <div className="flex flex-col min-h-screen bg-white text-black">
+      <Nav />
+      <div className="flex-grow container mx-auto px-4 py-10">
+        <h1 className="text-3xl font-bold mb-6">Dados do Usuário</h1>
+        <div className="space-y-4">
+          {Object.keys(usuario).map((field) => (
+            <div key={field} className="flex items-center">
+              <span className="font-semibold">{field.replace('_', ' ')}:</span>
+              {isEditing === field ? (
+                <input
+                  type="text"
+                  id={field}
+                  value={usuario[field]}
+                  onChange={handleInputChange}
+                  className="ml-2 p-2 border border-gray-300 rounded"
+                  onBlur={(e) => handleSave(e, field)}
+                />
+              ) : (
+                <span className="ml-2">{usuario[field]}</span>
+              )}
+              <FaEdit className="ml-4 cursor-pointer text-blue-500" onClick={() => setIsEditing(field)} />
+            </div>
+          ))}
         </div>
-
-        {/* Exibe as informações do usuário */}
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between">
-              <span className="font-semibold">Nome</span>
-              <span>{usuario.nome_completo}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">CPF</span>
-              <span>{usuario.cpf}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">E-mail</span>
-              <span>{usuario.email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Telefone</span>
-              <span>{usuario.telefone || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">CEP</span>
-              <span>{usuario.cep || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Rua</span>
-              <span>{usuario.rua || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Número</span>
-              <span>{usuario.numero || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Cidade</span>
-              <span>{usuario.cidade || 'Não informado'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">Estado</span>
-              <span>{usuario.estado || 'Não informado'}</span>
-            </div>
-          </div>
-
-          {/* Botão para excluir o usuário */}
-          <div className="text-center mt-4">
-            <button
-              onClick={handleDelete}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Excluir Conta
-            </button>
-          </div>
+        <div className="mt-8">
+          <button
+            className="bg-red-600 text-white p-3 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 mr-4"
+            onClick={handleDeleteAccount}
+          >
+            Excluir Minha Conta
+          </button>
+          <button
+            className="bg-blue-600 text-white p-3 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
 
-export default DadosUsuarios;
+export default DadosUsuario;
